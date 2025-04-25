@@ -2,7 +2,7 @@
 # Author:   Lesovsky A.V.
 # Description:  Get values stored in Redis keys
 
-getValues=$(redis-cli --raw $1 $2)
+getValues=$(redis-cli${REDIS_PASS:+ -a "${REDIS_PASS}"} --raw $1 $2)
 
 echo -n '{"data":['
 for value in $getValues; do echo -n "{\"{#VALUE}\": \"$value\"},"; done |sed -e 's:\},$:\}:'
