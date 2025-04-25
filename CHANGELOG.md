@@ -1,3 +1,9 @@
+## 7-2.18.17 2025-04-25 <fermion2020@github>
+
+   ### Changed
+      - Update Zabbix Configuration to check localhost if REDIS_PASS exist
+
+
 ## 7-2.18.16 2025-04-23 <dave at tiredofit dot ca>
 
    ### Added
