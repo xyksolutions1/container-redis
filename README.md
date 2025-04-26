@@ -117,6 +117,7 @@ Be sure to view the following repositories to understand all the customizable op
 | `LOG_LEVEL`   | Log level                              | `notice` |         |
 | `REDIS_PORT`  | Listening Port                         | `6379`   |         |
 | `REDIS_PASS`  | (optional) Require password to connect |          | x       |
+| `ZABBIX_SESSION_NAME`  | (optional) Replace with Zabbix Session Name in WebUI | `Redis1` |       |
 
 ### Networking
 

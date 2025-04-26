@@ -1,3 +1,9 @@
+## 7-2.18.18 2025-04-26 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add ZABBIX_AGENT_TYPE=modern (default) support for REDIS_PASS
+
+
 ## 7-2.18.17 2025-04-25 <fermion2020@github>
 
    ### Changed
