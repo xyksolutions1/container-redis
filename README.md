@@ -72,9 +72,8 @@ The following image tags are available along with their tagged release based on 
 | Version | Container OS | Tag       |
 | ------- | ------------ | --------- |
 | latest  | Alpine       | `:latest` |
+| 8       | Alpine       | `:8`      |
 | 7       | Alpine       | `:7`      |
-| 6       | Alpine       | `:6`      |
-| 5       | Alpine       | `:5`      |
 
 #### Multi Architecture
 Images are built primarily for `amd64` architecture, and may also include builds for `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`

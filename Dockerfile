@@ -6,7 +6,7 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ARG REDIS_VERSION
 
-ENV REDIS_VERSION=${REDIS_VERSION:-"7.4.3"} \
+ENV REDIS_VERSION=${REDIS_VERSION:-"8.0.0"} \
     CONTAINER_ENABLE_MESSAGING=FALSE \
     IMAGE_NAME="tiredofit/redis" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-redis/"
@@ -18,23 +18,88 @@ RUN source /assets/functions/00-container && \
     package update && \
     package upgrade && \
     package install .redis-build-deps \
-				coreutils \
-				gcc \
-				linux-headers \
-				make \
-				musl-dev \
-				openssl-dev \
-				tar \
-			    && \
+				                        coreutils \
+				                        gcc \
+				                        linux-headers \
+				                        make \
+				                        musl-dev \
+				                        openssl-dev \
+				                        tar \
+			                            && \
 	\
+    package install .redis-module-build-deps \
+                                        autoconf \
+		                                automake \
+		                                bsd-compat-headers \
+		                                build-base \
+		                                cargo \
+		                                clang \
+		                                clang18-libclang \
+		                                cmake \
+		                                g++ \
+		                                git \
+		                                libffi-dev \
+		                                libgcc \
+		                                libtool \
+		                                openssh \
+		                                openssl  \
+		                                py-virtualenv \
+		                                py3-cryptography \
+		                                py3-pip \
+                                        py3-setuptools \
+		                                py3-virtualenv \
+		                                python3 \
+		                                python3-dev \
+		                                rsync \
+		                                tar \
+		                                unzip \
+		                                which \
+		                                xsimd \
+		                                xz \
+                                        && \
+    \
+    #pip install \
+    #            -q \
+    #            --upgrade setuptools \
+    #            &&  \
+    #pip install \
+    #            -q \
+    #            --upgrade pip \
+    #            && \
+    PIP_BREAK_SYSTEM_PACKAGES=1 pip install \
+                                            -q \
+                                                addict \
+                                                jinja2 \
+                                                ramp-packer \
+                                                toml \
+                                                && \
 	clone_git_repo https://github.com/redis/redis "${REDIS_VERSION}" && \
 	\
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *1 *,.*[)],$' src/config.c && \
 	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' src/config.c && \
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' src/config.c && \
-	\
-	export BUILD_TLS=yes && \
-	make -j "$(nproc)" all && \
+    \
+    gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" && \
+	extraJemallocConfigureFlags="--build=$gnuArch" && \
+	dpkgArch="$(dpkg --print-architecture)" && \
+	case "${dpkgArch##*-}" in \
+		amd64 ) extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-page=12" ;; \
+		*) extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-page=16" ;; \
+	esac ; \
+	extraJemallocConfigureFlags="$extraJemallocConfigureFlags --with-lg-hugepage=21"; \
+	grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
+	sed -ri 's!cd jemalloc && ./configure !&'"$extraJemallocConfigureFlags"' !' /usr/src/redis/deps/Makefile; \
+	grep -F "cd jemalloc && ./configure $extraJemallocConfigureFlags " /usr/src/redis/deps/Makefile; \
+    export \
+            BUILD_TLS=yes \
+            BUILD_WITH_MODULES=yes \
+            INSTALL_RUST_TOOLCHAIN=yes \
+            DISABLE_WERRORS=yes \
+            && \
+    make -C /usr/src/redis/modules/redisjson get_source; \
+    sed -i 's/^RUST_FLAGS=$/RUST_FLAGS += -C target-feature=-crt-static/' /usr/src/redis/modules/redisjson/src/Makefile ; \
+    grep -E 'RUST_FLAGS' /usr/src/redis/modules/redisjson/src/Makefile; \
+    make -j "$(nproc)" all && \
 	make install && \
 	\
 	serverMd5="$(md5sum /usr/local/bin/redis-server | cut -d' ' -f1)"; export serverMd5 && \
@@ -47,6 +112,7 @@ RUN source /assets/functions/00-container && \
 		-exec ln -svfT 'redis-server' '{}' ';' \
 		&& \
 	\
+    make -C /usr/src/redis distclean && \
     runDeps="$( \
 	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
 		| tr ',' '\n' \
@@ -57,7 +123,10 @@ RUN source /assets/functions/00-container && \
                     su-exec \
                     $runDeps \
                     && \
-	package remove .redis-build-deps && \
+	package remove \
+                    .redis-build-deps \
+                    .redis-module-build-deps \
+                    && \
 	rm -rf /usr/src/* && \
     package cleanup && \
     \
