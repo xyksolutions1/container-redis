@@ -1,3 +1,15 @@
+## 8-2.19.0 2025-05-02 <dave at tiredofit dot ca>
+
+   ### Added
+      - Redis 8.0.0 with all data structures and modules built
+
+
+## 8.-2.19.0 2025-05-02 <dave at tiredofit dot ca>
+
+   ### Added
+      - Redis 8.0.0 built with all modules and data structures
+
+
 ## 7-2.18.18 2025-04-26 <dave at tiredofit dot ca>
 
    ### Added
