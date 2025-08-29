@@ -41,9 +41,8 @@ RUN source /assets/functions/00-container && \
             build_arch="aarch64-linux-gnu" ; \
             lg_page="--with-lg-page=16" ;; \
         *) : ;; \
-        jemalloc_flags="--build ${build_arch} ${lg_page} --with-lg-hugepage=21" \
     esac; \
-    \
+    jemalloc_flags="--build ${build_arch} ${lg_page} --with-lg-hugepage=21"  && \
 	export BUILD_TLS=yes && \
     grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
 	sed -ri 's!cd jemalloc && ./configure !&'"$jemalloc_flags"' !' /usr/src/redis/deps/Makefile; \
