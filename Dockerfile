@@ -18,14 +18,14 @@ RUN source /assets/functions/00-container && \
     package update && \
     package upgrade && \
     package install .redis-build-deps \
-				coreutils \
-				gcc \
-				linux-headers \
-				make \
-				musl-dev \
-				openssl-dev \
-				tar \
-			    && \
+				                    coreutils \
+				                    gcc \
+				                    linux-headers \
+				                    make \
+				                    musl-dev \
+				                    openssl-dev \
+				                    tar \
+			                        && \
 	\
 	clone_git_repo https://github.com/redis/redis "${REDIS_VERSION}" && \
 	\
@@ -33,7 +33,21 @@ RUN source /assets/functions/00-container && \
 	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' src/config.c && \
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' src/config.c && \
 	\
+    case "$(apk --print-arch)" in \
+        x86_64) \
+            build_arch="x86_64-linux-gnu" ; \
+            lg_page="--with-lg-page=12" ;; \
+        aarch64) \
+            build_arch="aarch64-linux-gnu" ; \
+            lg_page="--with-lg-page=16" ;; \
+        *) : ;; \
+        jemalloc_flags="--build ${build_arch} ${lg_page} --with-lg-hugepage=21" \
+    esac; \
+    \
 	export BUILD_TLS=yes && \
+    grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
+	sed -ri 's!cd jemalloc && ./configure !&'"$jemalloc_flags"' !' /usr/src/redis/deps/Makefile; \
+	grep -F "cd jemalloc && ./configure $jemalloc_flags " /usr/src/redis/deps/Makefile; \
 	make -j "$(nproc)" all && \
 	make install && \
 	\
