@@ -4,6 +4,32 @@ source /assets/functions/00-container
 prepare_service
 process_name="redis"
 
+cat <<EOF
+
+****************************************************************************************
+*                                                                                      *
+*                    END OF LIFE NOTICE AUGUST 18, 2025                                *
+*                               tiredofit/redis                                        *
+*                                                                                      *
+* This image is no longer maintained as of and will not receive updates.               *
+*                                                                                      *
+* A successor image is available at:                                                   *
+*                                                                                      *
+* Repository | Documentation:                                                          *
+*   - https://github.com/nfrastack/container-redis                                     *
+*                                                                                      *
+* Image Registries:                                                                    *
+*   - https://hub.docker.com/r/nfrastack/redis                                         *
+*   - https://github.com/nfrastack/container-redis/pkgs/container/container-redis      *
+*                                                                                      *
+* Please visit https://nfrastack.com for more information.                             *
+*                                                                                      *
+****************************************************************************************
+
+EOF
+
+sleep 15
+
 mkdir -p "${LOG_PATH}"
 touch "${LOG_PATH}"/"${LOG_FILE}"
 chown -R redis:redis "${LOG_PATH}"/"${LOG_FILE}"
