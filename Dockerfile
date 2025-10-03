@@ -29,10 +29,6 @@ RUN source /assets/functions/00-container && \
 	\
 	clone_git_repo https://github.com/redis/redis "${REDIS_VERSION}" && \
 	\
-	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *1 *,.*[)],$' src/config.c && \
-	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' src/config.c && \
-	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' src/config.c && \
-	\
     case "$(apk --print-arch)" in \
         x86_64) \
             build_arch="x86_64-linux-gnu" ; \
@@ -42,7 +38,12 @@ RUN source /assets/functions/00-container && \
             lg_page="--with-lg-page=16" ;; \
         *) : ;; \
     esac; \
-    jemalloc_flags="--build ${build_arch} ${lg_page} --with-lg-hugepage=21"  && \
+    \
+    jemalloc_flags="--build ${build_arch} ${lg_page} --with-lg-hugepage=21" && \
+    grep -E '^ *createBoolConfig[(]"protected-mode",.*, *1 *,.*[)],$' src/config.c && \
+	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' src/config.c && \
+	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' src/config.c && \
+	\
 	export BUILD_TLS=yes && \
     grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
 	sed -ri 's!cd jemalloc && ./configure !&'"$jemalloc_flags"' !' /usr/src/redis/deps/Makefile; \
