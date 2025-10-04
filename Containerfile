@@ -51,7 +51,7 @@ RUN echo "" && \
                         && \
 	clone_git_repo https://github.com/redis/redis "${REDIS_VERSION}" && \
 	\
-    case "$(cotnainer_distro arch)" in \
+    case "$(container_info arch)" in \
         x86_64) \
             build_arch="x86_64-linux-gnu" ; \
             lg_page="--with-lg-page=12" ;; \
