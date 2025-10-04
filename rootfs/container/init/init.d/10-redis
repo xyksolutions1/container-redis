@@ -1,0 +1,13 @@
+#!/command/with-contenv bash
+# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+#
+# SPDX-License-Identifier: MIT
+
+source /assets/functions/00-container
+prepare_service 10-redis
+SERVICE_NAME="redis"
+
+redis_bootstrap_filesystem
+redis_configure_monitoring
+
+liftoff

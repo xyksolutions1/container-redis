@@ -1,27 +1,23 @@
-version: '3.7'
 services:
-  
+
   redis-app:
-    image: tiredofit/redis:5
+    image: docker.io/nfrastack/redis:7
     container_name: redis-app
     volumes:
-    - ./data:/data/db
-    #- ./logs:/data/logs
-    environment: 
+    #- ./data:/data
+    #- ./logs:/logs
+    environment:
     - CONTAINER_NAME=redis-app
 
     - ENABLE_LOGS=FALSE
     - REDIS_PASS=password
     networks:
-    - internal
     - services
     restart: always
 
 networks:
   proxy:
     external: true
-  internal:
-    external: false
   services:
     external: true
 
