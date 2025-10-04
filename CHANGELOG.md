@@ -1,3 +1,10 @@
+## 8-3.0.0pre 2025-10-04 <dave at tiredofit dot ca>
+
+### Changed
+   - Updated base image to nfrastack/base
+   - Alpine 3.22
+   - Redis 8.2.2
+
 ## 8-2.19.99 2025-10-03 <dave at tiredofit dot ca>
 
 Add EOL Notice and deprecate image
@@ -469,7 +476,7 @@ Add EOL Notice and deprecate image
 ## 2.6 2018-09-09 <dave at tiredofit dot ca>
 
 * Change Alpine base to 3.8
-* Redis 4.0.11 
+* Redis 4.0.11
 
 ## 2.5 2018-04-15 <dave at tiredofit dot ca>
 
@@ -494,7 +501,7 @@ Add EOL Notice and deprecate image
 
 ## 2.0 2017-07-18 <dave at tiredofit dot ca>
 
-* Rebase with s6.d 
+* Rebase with s6.d
 * Security Fixes
 * Data Dir Fix
 

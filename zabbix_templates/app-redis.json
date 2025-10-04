@@ -13,7 +13,7 @@
                 "uuid": "e111446745a1425b862f8727ae63bce4",
                 "template": "Redis",
                 "name": "Redis",
-                "description": "Get Redis metrics from plugin for the Zabbix Agent 2\n\nThis template is meant specifically for https://github.com/tiredofit/docker-redis",
+                "description": "Get Redis metrics from plugin for the Zabbix Agent 2\n\nThis template is meant specifically for https://github.com/nfrastack/container-redis",
                 "groups": [
                     {
                         "name": "Templates/Databases"

@@ -1,0 +1,58 @@
+redis_bootstrap_filesystem() {
+    if var_true "${ENABLE_PERSISTENCE}" ; then
+        create_folder "${DATA_PATH}" "${REDIS_USER}":"${REDIS_GROUP}" 700
+    fi
+
+    if var_true "${ENABLE_SOCKET}" ; then
+        create_folder "${SOCKET_PATH}" "${REDIS_USER}":"${REDIS_GROUP}" "${SOCKET_PERMISSIONS}"
+    fi
+
+    case "${LOG_TYPE,,}" in
+        "none" )
+            ENABLE_LOGS="FALSE"
+        ;;
+        "file" | "both" )
+            create_folder "${LOG_PATH}" "${REDIS_USER}":"${REDIS_GROUP}" 700
+            create_logrotate redis "${LOG_PATH%/}/${LOG_FILE}" "${REDIS_USER}" "${REDIS_GROUP}" redis
+        ;;
+        "console" )
+            ENABLE_LOGS="FALSE"
+        ;;
+    esac
+}
+
+redis_build_runtime_arguments() {
+    if var_true "${ENABLE_LOGS}" ; then
+        redis_logs=" --logfile ${LOG_PATH%/}/${LOG_FILE}"
+    fi
+
+    if var_true "${ENABLE_PERSISTENCE}" ; then
+        redis_persistence="--appendonly yes"
+    fi
+
+    if var_true "${ENABLE_SOCKET}" ; then
+        redis_socket="--unixsocket ${SOCKET_PATH%/}/${SOCKET_FILE} --unixsocketperm ${SOCKET_PERMISSIONS}"
+    fi
+}
+
+redis_configure_monitoring() {
+    if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
+        source /container/defaults/03-monitoring
+        cat <<EOF > "${ZABBIX_CONFIG_PATH%/}"/"${ZABBIX_CONFIG_FILE}.d"/nfrastack_redis.conf
+# Zabbix Redis Configuration - Automatically Generated
+# Autoregister=redis
+EOF
+
+        case "${ZABBIX_AGENT_TYPE,,}" in
+            "1" | "classic" | "c" | "legacy" | "old" )
+            :
+        ;;
+            "2" | "m" | "n" | "modern" | "new" )
+                echo "Plugins.Redis.Sessions.${ZABBIX_SESSION_NAME}.Uri=tcp://localhost:${REDIS_PORT}" | silent tee -a "${ZABBIX_CONFIG_PATH%/}"/"${ZABBIX_CONFIG_FILE}.d"/nfrastack_redis.conf
+                if [ -n "${REDIS_PASS}" ] ; then
+                    echo "Plugins.Redis.Sessions.${ZABBIX_SESSION_NAME}.Password=${REDIS_PASS}" | silent tee -a "${ZABBIX_CONFIG_PATH%/}"/"${ZABBIX_CONFIG_FILE}.d"/nfrastack_redis.conf
+                fi
+        ;;
+        esac
+    fi
+}
