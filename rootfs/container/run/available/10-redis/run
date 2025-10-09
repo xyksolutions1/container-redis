@@ -16,7 +16,7 @@ redis_build_runtime_arguments
 liftoff
 
 
-print_start "Starting Redis ${REDIS_VERSION}"
+print_start "Starting Redis $(grep -o "ADD: Redis .* |" /container/build/${IMAGE_NAME/\//_}/build.log | awk '{print $3}')"
 exec s6-setuidgid redis redis-server --dir "${DATA_PATH}" \
                                      ${REDIS_PASS:+--requirepass $REDIS_PASS} \
                                      --loglevel "${LOG_LEVEL}" \
