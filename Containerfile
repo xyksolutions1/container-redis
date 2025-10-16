@@ -132,8 +132,10 @@ RUN echo "" && \
     make -C /usr/src/redis/modules/redisjson get_source && \
     sed -i 's/^RUST_FLAGS=$/RUST_FLAGS += -C target-feature=-crt-static/' /usr/src/redis/modules/redisjson/src/Makefile && \
     grep -E 'RUST_FLAGS' /usr/src/redis/modules/redisjson/src/Makefile && \
+    make -C /usr/src/redis/modules/redisearch get_source && \
+    sed -i "1i#\!/usr/bin/env bash" /usr/src/redis/modules/redisearch/src/deps/VectorSimilarity/deps/ScalableVectorSearch/cmake/patches/apply_patch_toml.sh && \
     make -j "$(nproc)" all && \
-	make install && \
+    make install && \
 	\
     runDeps="$( \
 	            scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
