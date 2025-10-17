@@ -10,7 +10,7 @@ SERVICE_NAME="redis"
 check_container_initialized
 check_service_initialized init
 
-transform_file_var REDIS_PASS
+transform_var file REDIS_PASS
 redis_build_runtime_arguments
 
 liftoff
