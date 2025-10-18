@@ -136,22 +136,15 @@ RUN echo "" && \
     sed -i "1i#\!/usr/bin/env bash" /usr/src/redis/modules/redisearch/src/deps/VectorSimilarity/deps/ScalableVectorSearch/cmake/patches/apply_patch_toml.sh && \
     make -j "$(nproc)" all && \
     make install && \
-	\
-    runDeps="$( \
-	            scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
-	            	| tr ',' '\n' \
-	            	| sort -u \
-	            	| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-              )" && \
     mkdir -p /data && \
     make -C /usr/src/redis distclean && \
     chown redis:redis /data && \
     container_build_log add "Redis" "${REDIS_VERSION}" "${REDIS_REPO_URL}" && \
     package install \
                         REDIS_RUN_DEPS \
-                        $runDeps \
+                        SCANNED_RUNTIME_DEPS \
                         && \
-	package remove \
+    package remove \
                         REDIS_BUILD_DEPS \
                         REDIS_MODULE_BUILD_DEPS \
                         && \
