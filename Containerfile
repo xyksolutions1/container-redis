@@ -63,30 +63,24 @@ RUN echo "" && \
     \
     jemalloc_flags="--build ${build_arch} ${lg_page} --with-lg-hugepage=21" && \
     grep -E '^ *createBoolConfig[(]"protected-mode",.*, *1 *,.*[)],$' src/config.c && \
-	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' src/config.c && \
-	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' src/config.c && \
-	\
-	export BUILD_TLS=yes && \
+    sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' src/config.c && \
+    grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' src/config.c && \
+    \
+    export BUILD_TLS=yes && \
     grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
-	sed -ri 's!cd jemalloc && ./configure !&'"$jemalloc_flags"' !' /usr/src/redis/deps/Makefile; \
-	grep -F "cd jemalloc && ./configure $jemalloc_flags " /usr/src/redis/deps/Makefile; \
-	make -j "$(nproc)" all && \
-	make install && \
+    sed -ri 's!cd jemalloc && ./configure !&'"$jemalloc_flags"' !' /usr/src/redis/deps/Makefile; \
+    grep -F "cd jemalloc && ./configure $jemalloc_flags " /usr/src/redis/deps/Makefile; \
+    make -j "$(nproc)" all && \
+    make install && \
 	\
-    runDeps="$( \
-	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
-		| tr ',' '\n' \
-		| sort -u \
-		| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-    )" && \
     mkdir -p /data && \
     chown redis:redis /data && \
     container_build_log add "Redis" "${REDIS_VERSION}" "${REDIS_REPO_URL}" && \
     package install \
                         REDIS_RUN_DEPS \
-                        $runDeps \
+                        SCANNED_RUNTIME_DEPS \
                         && \
-	package remove \
+    package remove \
                         REDIS_BUILD_DEPS \
                         && \
     package cleanup
