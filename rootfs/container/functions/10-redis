@@ -37,7 +37,7 @@ redis_build_runtime_arguments() {
 
 redis_configure_monitoring() {
     if var_true "${CONTAINER_ENABLE_MONITORING}" ; then
-        source /container/base/defaults/03-monitoring
+        source /container/base/defaults/*-monitoring
         case "${CONTAINER_MONITORING_BACKEND,,}" in
             "zabbix" )
                 cat <<EOF | silent tee "${ZABBIX_CONFIG_PATH%/}"/"${ZABBIX_CONFIG_FILE}.d"/nfrastack_redis.conf
