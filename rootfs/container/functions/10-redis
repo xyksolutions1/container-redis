@@ -37,7 +37,7 @@ redis_build_runtime_arguments() {
 
 redis_configure_monitoring() {
     if var_true "${CONTAINER_ENABLE_MONITORING}" ; then
-        source /container/base/defaults/03-monitoring
+        source /container/base/defaults/*-monitoring
         case "${CONTAINER_MONITORING_BACKEND,,}" in
             "zabbix" )
                 cat <<EOF | silent tee "${ZABBIX_CONFIG_PATH%/}"/"${ZABBIX_CONFIG_FILE}.d"/nfrastack_redis.conf
@@ -48,13 +48,13 @@ EOF
                 case "${ZABBIX_AGENT_TYPE,,}" in
                     "1" | "classic" | "c" | "legacy" | "old" )
                     :
-                ;;
+                    ;;
                     "2" | "m" | "n" | "modern" | "new" )
                         echo "Plugins.Redis.Sessions.${ZABBIX_SESSION_NAME}.Uri=tcp://localhost:${REDIS_PORT}" | silent tee -a "${ZABBIX_CONFIG_PATH%/}"/"${ZABBIX_CONFIG_FILE}.d"/nfrastack_redis.conf
                         if [ -n "${REDIS_PASS}" ] ; then
                             echo "Plugins.Redis.Sessions.${ZABBIX_SESSION_NAME}.Password=${REDIS_PASS}" | silent tee -a "${ZABBIX_CONFIG_PATH%/}"/"${ZABBIX_CONFIG_FILE}.d"/nfrastack_redis.conf
                         fi
-                ;;
+                    ;;
                 esac
             ;;
         esac
