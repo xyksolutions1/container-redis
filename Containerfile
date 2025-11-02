@@ -13,7 +13,7 @@ LABEL \
         org.opencontainers.image.licenses="MIT"
 
 ARG \
-    REDIS_VERSION="7.4.6" \
+    REDIS_VERSION="7.4.7" \
     REDIS_REPO_URL="https://github.com/redis/redis"
 
 COPY CHANGELOG.md /usr/src/container/CHANGELOG.md

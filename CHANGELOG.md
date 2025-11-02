@@ -3,7 +3,7 @@
 ### Changed
    - Updated base image to nfrastack/base
    - Alpine 3.22
-   - Redis 7.4.6
+   - Redis 7.4.7
 
 ## 7-2.99 2025-10-03 <dave at tiredofit dot ca>
 
