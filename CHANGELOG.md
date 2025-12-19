@@ -1,4 +1,4 @@
-## 8-3.0.0pre 2025-10-04 <dave at tiredofit dot ca>
+## 8-3.0.0 2025-12-19 <dave at tiredofit dot ca>
 
 ### Changed
    - Updated base image to nfrastack/base
