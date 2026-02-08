@@ -1,3 +1,10 @@
+## 8-3.0.1 2026-02-08 <code at nfastack dot com>
+
+   ### Added
+      - Redis 8.4.1
+      - Alpine 3.23 base
+
+
 ## 8-3.0.0 2025-12-19 <dave at tiredofit dot ca>
 
 ### Changed
