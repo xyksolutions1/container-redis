@@ -1,3 +1,10 @@
+## 8-3.0.2 2026-02-10 <code at nfastack dot com>
+
+   ### Added
+      - Redis 8.6.0
+      - Revert back to Alpine 3.22
+
+
 ## 8-3.0.1 2026-02-08 <code at nfastack dot com>
 
    ### Added

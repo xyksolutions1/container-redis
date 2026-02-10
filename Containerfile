@@ -17,7 +17,7 @@ LABEL \
         org.opencontainers.image.licenses="MIT"
 
 ARG \
-    REDIS_VERSION="8.4.1" \
+    REDIS_VERSION="8.6.0" \
     REDIS_REPO_URL="https://github.com/redis/redis"
 
 COPY CHANGELOG.md /usr/src/container/CHANGELOG.md
@@ -132,9 +132,10 @@ RUN echo "" && \
     make -C /usr/src/redis/modules/redisjson get_source && \
     sed -i 's/^RUST_FLAGS=$/RUST_FLAGS += -C target-feature=-crt-static/' /usr/src/redis/modules/redisjson/src/Makefile && \
     grep -E 'RUST_FLAGS' /usr/src/redis/modules/redisjson/src/Makefile && \
-    make -C /usr/src/redis/modules/redisearch get_source && \
-    sed -i "1i#\!/usr/bin/env bash" /usr/src/redis/modules/redisearch/src/deps/VectorSimilarity/deps/ScalableVectorSearch/cmake/patches/apply_patch_toml.sh && \
+    #make -C /usr/src/redis/modules/redisearch get_source && \
+    #sed -i "1i#\!/usr/bin/env bash" /usr/src/redis/modules/redisearch/src/deps/VectorSimilarity/deps/ScalableVectorSearch/cmake/patches/apply_patch_toml.sh && \
     make -j "$(nproc)" all && \
+    make all && \
     make install && \
     mkdir -p /data && \
     make -C /usr/src/redis distclean && \
