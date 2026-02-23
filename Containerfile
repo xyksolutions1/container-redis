@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: © 2025 Nfrastack <code@nfrastack.com>
+# SPDX-FileCopyrightText: © 2026 Nfrastack <code@nfrastack.com>
 #
 # SPDX-License-Identifier: MIT
 
@@ -17,7 +17,7 @@ LABEL \
         org.opencontainers.image.licenses="MIT"
 
 ARG \
-    REDIS_VERSION="8.6.0" \
+    REDIS_VERSION="8.6.1" \
     REDIS_REPO_URL="https://github.com/redis/redis"
 
 COPY CHANGELOG.md /usr/src/container/CHANGELOG.md
@@ -48,9 +48,9 @@ RUN echo "" && \
                                 		bsd-compat-headers \
                                 		build-base \
                                 		cargo \
-                                		clang \
-                                		clang-static \
-                                		clang-libclang \
+                                		clang21 \
+                                		clang21-static \
+                                		clang21-libclang \
                                 		cmake \
                                 		curl \
                                 		g++ \
@@ -58,7 +58,7 @@ RUN echo "" && \
                                 		libffi-dev \
                                 		libgcc \
                                 		libtool \
-                                		llvm-dev \
+                                		llvm21-dev \
                                 		ncurses-dev \
                                 		openssh \
                                 		openssl  \
@@ -100,6 +100,7 @@ RUN echo "" && \
                                                 toml \
                                                 && \
 	clone_git_repo "${REDIS_REPO_URL}" "${REDIS_VERSION}" && \
+	pip install -q --upgrade setuptools &&  pip install -q --upgrade pip && PIP_BREAK_SYSTEM_PACKAGES=1 pip install -q addict toml jinja2 ramp-packer && \
 	\
     case "$(container_info arch)" in \
         x86_64) \
@@ -126,6 +127,7 @@ RUN echo "" && \
             BUILD_WITH_MODULES=yes \
             INSTALL_RUST_TOOLCHAIN=yes \
             DISABLE_WERRORS=yes \
+	        PATH="/usr/lib/llvm21/bin:$PATH" \
             RUST_DYN_CRT=1 \
             && \
     \
@@ -135,7 +137,6 @@ RUN echo "" && \
     #make -C /usr/src/redis/modules/redisearch get_source && \
     #sed -i "1i#\!/usr/bin/env bash" /usr/src/redis/modules/redisearch/src/deps/VectorSimilarity/deps/ScalableVectorSearch/cmake/patches/apply_patch_toml.sh && \
     make -j "$(nproc)" all && \
-    make all && \
     make install && \
     mkdir -p /data && \
     make -C /usr/src/redis distclean && \
