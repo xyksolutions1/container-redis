@@ -118,9 +118,9 @@ RUN echo "" && \
 	sed -ri 's!^( *createBoolConfig[(]"protected-mode",.*, *)1( *,.*[)],)$!\10\2!' src/config.c && \
 	grep -E '^ *createBoolConfig[(]"protected-mode",.*, *0 *,.*[)],$' src/config.c && \
 	\
-    grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
-	sed -ri 's!cd jemalloc && ./configure !&'"$jemalloc_flags"' !' /usr/src/redis/deps/Makefile && \
-	grep -F "cd jemalloc && ./configure $jemalloc_flags " /usr/src/redis/deps/Makefile && \
+    #grep -F 'cd jemalloc && ./configure ' /usr/src/redis/deps/Makefile; \
+	#sed -ri 's!cd jemalloc && ./configure !&'"$jemalloc_flags"' !' /usr/src/redis/deps/Makefile && \
+	#grep -F "cd jemalloc && ./configure $jemalloc_flags " /usr/src/redis/deps/Makefile && \
 	\
     export \
             BUILD_TLS=yes \
