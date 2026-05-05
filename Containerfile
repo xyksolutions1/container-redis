@@ -1,15 +1,15 @@
 ARG BASE_IMAGE
 
-FROM ${BASE_IMAGE}
+FROM docker.io/xyksolutions1/container-base:main
 
 LABEL \
         org.opencontainers.image.title="Redis" \
         org.opencontainers.image.description="In memory key value database" \
-        org.opencontainers.image.url="https://hub.docker.com/r/nfrastack/redis" \
-        org.opencontainers.image.documentation="https://github.com/nfrastack/container-redis/blob/main/README.md" \
-        org.opencontainers.image.source="https://github.com/nfrastack/container-redis.git" \
-        org.opencontainers.image.authors="Nfrastack <code@nfrastack.com>" \
-        org.opencontainers.image.vendor="Nfrastack <https://www.nfrastack.com>" \
+        org.opencontainers.image.url="https://hub.docker.com/r/xyksolutions1/redis" \
+        org.opencontainers.image.documentation="https://github.com/xyksolutions1/container-redis/blob/main/README.md" \
+        org.opencontainers.image.source="https://github.com/xyksolutions1/container-redis.git" \
+        org.opencontainers.image.authors="xyksolutions1" \
+        org.opencontainers.image.vendor="xyksolutions1" \
         org.opencontainers.image.licenses="MIT"
 
 ARG \
@@ -21,8 +21,8 @@ COPY LICENSE /usr/src/container/LICENSE
 COPY README.md /usr/src/container/README.md
 
 ENV \
-    IMAGE_NAME="nfrastack/redis" \
-    IMAGE_REPO_URL="https://github.com/nfrastack/container-redis/"
+    IMAGE_NAME="xyksolutions1/redis" \
+    IMAGE_REPO_URL="https://github.com/xyksolutions1/container-redis/"
 
 RUN echo "" && \
     REDIS_BUILD_DEPS_ALPINE=" \
